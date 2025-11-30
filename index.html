@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>대공포 concrete 계산기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #181b1e;
+      color: #eaeaea;
+      font-family: 'Pretendard', 'Malgun Gothic', monospace, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      width: 100vw;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      display: block;
+    }
+    .wrap {
+      position: absolute;
+      left: 50%; top: 45%;
+      transform: translate(-50%, -45%);
+      padding: 1.5em 1.2em 1.1em 1.2em;
+      background: #22252a;
+      border-radius: 1.1em;
+      box-shadow: 0 3px 18px #0005;
+      min-width: 0; max-width: 350px;
+      width: 96vw;
+    }
+    .title {
+      margin-top: 0;
+      margin-bottom: 1.15em;
+      font-size: 1.22em;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #ffd280;
+      text-align: center;
+      text-shadow: 0 2px 9px #0002;
+      font-family: inherit;
+    }
+    label {
+      font-size: 1.05em;
+      color: #bebebe;
+      margin-right: 0.5em;
+      font-weight: 500;
+    }
+    input[type="number"] {
+      width: 70px; font-size: 1em;
+      padding: 5px 7px;
+      border: none;
+      border-radius: 0.5em;
+      background: #222831;
+      color: #fff;
+      box-shadow: 0 2px 8px #0002;
+      outline: none;
+      margin-right: 0.5em;
+    }
+    input[type="number"]:focus { background: #242c35;}
+    button {
+      font-size: 1em;
+      font-weight: 600;
+      padding: 6px 16px;
+      border: none;
+      border-radius: 0.6em;
+      background: linear-gradient(90deg,#ffa500,#ff3838 98%);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.17s, box-shadow 0.18s;
+      box-shadow: 0 2px 10px #ff990022;
+      margin-bottom: 0.5em;
+    }
+    button:hover { background: linear-gradient(90deg,#ff3838,#ffa500 100%);}
+    .out {
+      background: transparent;
+      border-radius: 0.7em;
+      margin-top: 1.3em;
+      padding: 0.6em 0.1em 0.5em 0.1em;
+      font-size: 1.08em;
+      line-height: 1.7;
+      min-height: 52px;
+      text-align: left;
+      min-width: 0;
+    }
+    .out b { color: #66d9ff; font-size:1.10em;}
+    .arrow-orange { color: #ffa500; font-weight: 800; }
+    .arrow-red    { color: #ff3838; font-weight: 800; }
+    .unit { color: #acb5b9; font-size: 0.96em; margin-top:0.6em; }
+    @media (max-width: 520px) {
+      .wrap { padding: 1.05em 0.5em 0.7em 0.5em; font-size:0.97em; }
+      .title { font-size: 1.05em; margin-bottom: 1.05em;}
+      .out  { padding: 0.45em 0 0.38em 0; font-size:0.98em;}
+    }
+    @media (prefers-color-scheme: light) {
+      body   { background: #f5f7fa; color: #23272b;}
+      .wrap  { background: #f9fbfd; box-shadow: 0 3px 16px #c5def244;}
+      .title { color: #ffa13b; }
+      label  { color: #5473a7; }
+      .unit  { color: #7d8793; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">대공포 concrete 계산기</div>
+    <div style="margin-bottom:1em;">
+      <label for="count">대공포 개수 (n):</label>
+      <input type="number" id="count" min="1" max="1000" value="1" onkeydown="if(event.key==='Enter'){calc()}">
+      <button onclick="calc()">계산</button>
+    </div>
+    <div id="output" class="out"></div>
+    <div class="unit">* res 단위: ×1000</div>
+  </div>
+  <script>
+    function g(n) {
+      if (n <= 1) return 0;
+      return 10 * ((n - 2) ** 2 + 1) * 1000;
+    }
+    function G(n) {
+      let total = 0;
+      for (let k = 2; k <= n; k++) total += g(k);
+      return total;
+    }
+    function calc() {
+      const n = parseInt(document.getElementById('count').value);
+      const out = document.getElementById('output');
+      if (isNaN(n) || n < 1) { out.innerHTML = ""; return; }
+      const lastCost = g(n);
+      const totalCost = G(n);
+      out.innerHTML =
+        `<b>대공포 ${n}개</b><br>
+        └ 마지막 단계 <span class="arrow-orange">(${n-1}→${n})</span> : <b>${lastCost.toLocaleString()}</b> res<br>
+        └ 누적 총 필요 <span class="arrow-red">(1→${n})</span> : <b>${totalCost.toLocaleString()}</b> res`;
+    }
+    window.onload = calc;
+  </script>
+</body>
+</html>
